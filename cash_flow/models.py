@@ -19,26 +19,35 @@ class Subcategory(models.Model):
         return self.name
 
 
+class Type(models.Model):
+    """Модель типа"""
+    name = models.CharField(max_length=20, verbose_name='Название', unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Status(models.Model):
+    """Модель статуса"""
+    name = models.CharField(max_length=20, verbose_name='Название', unique=True)
+
+    def __str__(self):
+        return self.name
+
+
 class CashFlow(models.Model):
     """Модель движения денежных средств."""
-    # Статусы
-    Statuses = [('Business', 'Бизнес'),
-                ('Personal', 'Личное'),
-                ('Tax', 'Налог')]
-
-    # Типы
-    Type = [('Replenishment', 'Пополнение'),
-            ('Write-downs', 'Списание'),]
-
     date_was_created = models.DateTimeField(default=timezone.now, verbose_name='Дата создания')
-    status = models.CharField(max_length=9, choices=Statuses, verbose_name='Статус')
-    type = models.CharField(max_length=14, choices=Type, verbose_name='Тип')
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='cashflow_category',
+    status = models.ForeignKey(Status, on_delete=models.SET_NULL, null=True, related_name='cashflow_status',
+                             verbose_name='Статус')
+    type = models.ForeignKey(Type, on_delete=models.SET_NULL, null=True, related_name='cashflow_type',
+                             verbose_name='Тип')
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='cashflow_category',
                                  verbose_name='Категория')
-    subcategory = models.ForeignKey(Subcategory, on_delete=models.CASCADE, related_name="cashflow_subcategory",
-                                    verbose_name='Подкатегория')
+    subcategory = models.ForeignKey(Subcategory, on_delete=models.SET_NULL, null=True,
+                                    related_name="cashflow_subcategory", verbose_name='Подкатегория')
     amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Сумма')
-    comment = models.TextField(verbose_name='Комментарий')
+    comment = models.TextField(verbose_name='Комментарий', null=True, blank=True)
 
     class Meta:
         verbose_name = 'Движение денежных средств'

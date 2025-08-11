@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Движение денежных средств | Создание</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .main-card {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .main-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 1.5rem;
+            border-bottom: none;
+        }
+
+        .card-title {
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.15);
+        }
+
+        .input-group-text {
+            background-color: var(--light-color);
+            border-radius: 8px 0 0 8px !important;
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.25);
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--dark-color);
+            margin-bottom: 8px;
+        }
+
+        .invalid-feedback {
+            font-size: 0.85rem;
+            margin-top: 6px;
+        }
+
+        .form-icon {
+            color: var(--accent-color);
+            margin-right: 8px;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .floating-label {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .floating-label input,
+        .floating-label select,
+        .floating-label textarea {
+            padding-top: 25px !important;
+        }
+
+        .floating-label label {
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            font-size: 0.85rem;
+            color: #6c757d;
+            transition: all 0.2s;
+            pointer-events: none;
+        }
+
+        .floating-label input:focus + label,
+        .floating-label input:not(:placeholder-shown) + label,
+        .floating-label select:focus + label,
+        .floating-label select:not([value=""]) + label,
+        .floating-label textarea:focus + label,
+        .floating-label textarea:not(:placeholder-shown) + label {
+            top: 5px;
+            font-size: 0.75rem;
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5 animate__animated animate__fadeIn">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="main-card">
+                    <div class="card-header text-white">
+                        <h2 class="card-title mb-0">
+                            <i class="bi bi-cash-stack me-2"></i>Создать движение денежных средств
+                        </h2>
+                    </div>
+
+                    <div class="card-body p-4">
+                        <form method="post" id="cashFlowForm" class="needs-validation" novalidate>
+                            {% csrf_token %}
+
+                            {% if form.non_field_errors %}
+                            <div class="alert alert-danger animate__animated animate__shakeX">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                {{ form.non_field_errors }}
+                            </div>
+                            {% endif %}
+
+                            <!-- Статус -->
+                            <div class="mb-4 floating-label">
+                                {{ form.status }}
+                                <label for="{{ form.status.id_for_label }}">
+                                    <i class="bi bi-info-circle form-icon"></i>{{ form.status.label }}
+                                </label>
+                                <div class="invalid-feedback">
+                                    {{ form.status.errors }}
+                                </div>
+                            </div>
+
+                            <!-- Тип -->
+                            <div class="mb-4 floating-label">
+                                {{ form.type }}
+                                <label for="{{ form.type.id_for_label }}">
+                                    <i class="bi bi-tag form-icon"></i>{{ form.type.label }}
+                                </label>
+                                <div class="invalid-feedback">
+                                    {{ form.type.errors }}
+                                </div>
+                            </div>
+
+                            <!-- Категория и подкатегория -->
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6 floating-label">
+                                    {{ form.category }}
+                                    <label for="{{ form.category.id_for_label }}">
+                                        <i class="bi bi-folder form-icon"></i>{{ form.category.label }}
+                                    </label>
+                                    <div class="invalid-feedback">
+                                        {{ form.category.errors }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6 floating-label">
+                                    {{ form.subcategory }}
+                                    <label for="{{ form.subcategory.id_for_label }}">
+                                        <i class="bi bi-folder2 form-icon"></i>{{ form.subcategory.label }}
+                                    </label>
+                                    <div class="invalid-feedback">
+                                        {{ form.subcategory.errors }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Сумма -->
+                            <div class="mb-4">
+                                <label for="{{ form.amount.id_for_label }}" class="form-label">
+                                    <i class="bi bi-currency-ruble form-icon"></i>{{ form.amount.label }}
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white"><i class="bi bi-currency-ruble"></i></span>
+                                    {{ form.amount }}
+                                </div>
+                                <div class="invalid-feedback">
+                                    {{ form.amount.errors }}
+                                </div>
+                            </div>
+
+                            <!-- Комментарий -->
+                            <div class="mb-4 floating-label">
+                                {{ form.comment }}
+                                <label for="{{ form.comment.id_for_label }}">
+                                    <i class="bi bi-chat-left-text form-icon"></i>{{ form.comment.label }}
+                                </label>
+                                <div class="invalid-feedback">
+                                    {{ form.comment.errors }}
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end mt-4">
+                                <button type="submit" class="btn btn-primary" id="submitBtn">
+                                    <i class="bi bi-save me-2"></i>Сохранить
+                                    <span class="loading-spinner" id="loadingSpinner"></span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+    $(document).ready(function() {
+        // При изменении категории
+        $('#id_category').change(function() {
+            var categoryId = $(this).val();
+            var subcategorySelect = $('#id_subcategory');
+
+            // Показываем спиннер загрузки
+            subcategorySelect.prop('disabled', true);
+            subcategorySelect.html('<option value="" selected disabled>Загрузка...</option>');
+
+            if (categoryId) {
+                // Отправляем AJAX запрос
+                $.ajax({
+                    url: "{% url 'cash_flow:load_subcategories' %}",
+                    data: {
+                        'category_id': categoryId
+                    },
+                    beforeSend: function() {
+                        $('#loadingSpinner').css('display', 'inline-block');
+                    },
+                    success: function(data) {
+                        // Очищаем и обновляем список подкатегорий
+                        subcategorySelect.empty();
+                        subcategorySelect.append($('<option></option>').attr('value', '').text('Выберите подкатегорию'));
+
+                        $.each(data, function(index, item) {
+                            subcategorySelect.append($('<option></option>').attr('value', item.id).text(item.name));
+                        });
+                    },
+                    complete: function() {
+                        subcategorySelect.prop('disabled', false);
+                        $('#loadingSpinner').hide();
+                    },
+                    error: function() {
+                        subcategorySelect.html('<option value="" selected disabled>Ошибка загрузки</option>');
+                    }
+                });
+            } else {
+                // Если категория не выбрана, очищаем подкатегории
+                subcategorySelect.empty();
+                subcategorySelect.append($('<option></option>').attr('value', '').text('Сначала выберите категорию'));
+                subcategorySelect.prop('disabled', false);
+            }
+        });
+
+        // Валидация формы
+        $('#cashFlowForm').submit(function(event) {
+            var form = this;
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            $(form).addClass('was-validated');
+
+            // Если форма валидна, показываем спиннер
+            if ($(form)[0].checkValidity()) {
+                $('#submitBtn').prop('disabled', true);
+                $('#loadingSpinner').css('display', 'inline-block');
+            }
+        });
+
+        // Анимация при фокусе
+        $('.form-control, .form-select').focus(function() {
+            $(this).parent().find('label').addClass('animate__animated animate__fadeInUp');
+        });
+    });
+    </script>
+</body>
+</html>
