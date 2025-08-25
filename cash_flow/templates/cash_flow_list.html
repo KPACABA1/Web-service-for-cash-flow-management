@@ -7,6 +7,25 @@
 <body>
     <div class="container mt-4">
         <h1>Движение денежных средств</h1>
+        <a href="{% url 'cash_flow:cash_flow-create' %}" class="button"> Создать движение денежных средств </a>
+
+        <style>
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #218838;
+        }
+        </style>
 
         <!-- Форма фильтрации -->
         <form method="get" class="mb-4 p-3 bg-light rounded">
