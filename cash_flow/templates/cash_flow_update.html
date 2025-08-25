@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактирование движения денежных средств</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Редактирование движения денежных средств</h1>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.errors %}
+            <div style="color: red;">
+                Пожалуйста, исправьте ошибки ниже.
+            </div>
+        {% endif %}
+
+        <div>
+            <label for="id_date_was_created">Дата:</label>
+            {{ form.date_was_created }}
+            {{ form.date_was_created.errors }}
+        </div>
+
+        <div>
+            <label for="id_status">Статус:</label>
+            {{ form.status }}
+            {{ form.status.errors }}
+        </div>
+
+        <div>
+            <label for="id_type">Тип:</label>
+            {{ form.type }}
+            {{ form.type.errors }}
+        </div>
+
+        <div>
+            <label for="id_category">Категория:</label>
+            {{ form.category }}
+            {{ form.category.errors }}
+        </div>
+
+        <div>
+            <label for="id_subcategory">Подкатегория:</label>
+            {{ form.subcategory }}
+            {{ form.subcategory.errors }}
+        </div>
+
+        <div>
+            <label for="id_amount">Сумма:</label>
+            {{ form.amount }}
+            {{ form.amount.errors }}
+        </div>
+
+        <div>
+            <label for="id_comment">Комментарий:</label>
+            {{ form.comment }}
+            {{ form.comment.errors }}
+        </div>
+
+        <button type="submit">Сохранить изменения</button>
+        <a href="{% url 'cash_flow:cash_flow-list' %}">Отмена</a>
+    </form>
+
+    <script>
+        $(document).ready(function() {
+            function loadSubcategories() {
+                var categoryId = $('#id_category').val();
+                if (categoryId) {
+                    $.ajax({
+                        url: '{% url "cash_flow:load_subcategories" %}',  // Используем имя URL
+                        data: {
+                            'category_id': categoryId
+                        },
+                        success: function(data) {
+                            $('#id_subcategory').empty();
+                            $('#id_subcategory').append($('<option></option>').attr('value', '').text('Выберите подкатегорию'));
+                            $.each(data, function(index, item) {
+                                $('#id_subcategory').append($('<option></option>').attr('value', item.id).text(item.name));
+                            });
+
+                            // Устанавливаем текущее значение подкатегории после загрузки
+                            var currentSubcategory = '{{ form.subcategory.value }}';
+                            if (currentSubcategory) {
+                                $('#id_subcategory').val(currentSubcategory);
+                            }
+                        }
+                    });
+                } else {
+                    $('#id_subcategory').empty();
+                    $('#id_subcategory').append($('<option></option>').attr('value', '').text('Сначала выберите категорию'));
+                }
+            }
+
+            $('#id_category').change(function() {
+                loadSubcategories();
+            });
+
+            // Загружаем подкатегории при загрузке страницы
+            if ($('#id_category').val()) {
+                loadSubcategories();
+            }
+        });
+    </script>
+</body>
+</html>

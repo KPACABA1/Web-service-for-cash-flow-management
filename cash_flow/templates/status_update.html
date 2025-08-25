@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактирование типа</title>
+    <!-- Подключение Bootstrap (если используете) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Редактирование статуса движения денежных средств</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+
+                            {% for field in form %}
+                                <div class="mb-3">
+                                    <label for="{{ field.id_for_label }}" class="form-label">
+                                        {{ field.label }}
+                                        {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                                    </label>
+
+                                    {% if field.field.widget.input_type == 'checkbox' %}
+                                        <div class="form-check">
+                                            {{ field }}
+                                            <label class="form-check-label" for="{{ field.id_for_label }}">
+                                                {{ field.help_text }}
+                                            </label>
+                                        </div>
+                                    {% else %}
+                                        {{ field }}
+                                        {% if field.help_text %}
+                                            <div class="form-text">{{ field.help_text }}</div>
+                                        {% endif %}
+                                    {% endif %}
+
+                                    {% if field.errors %}
+                                        <div class="text-danger">
+                                            {% for error in field.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">Сохранить</button>
+                                <a href="{% url 'cash_flow:cash_flow-list' %}" class="btn btn-secondary">Отмена</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Подключение Bootstrap JS (если нужно) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

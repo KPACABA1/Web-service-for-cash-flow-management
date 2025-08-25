@@ -38,7 +38,7 @@
             <tbody>
                 {% for item in cashflows %}
                 <tr>
-                    <td>{{ item.date_was_created|date:"d.m.Y H:i" }}</td>
+                    <td>{{ item.date_was_created|date:"d.m.Y " }}</td>
                     <td>{{ item.status.name|default:"-" }}</td>
                     <td>{{ item.type.name|default:"-" }}</td>
                     <td>{{ item.category.name|default:"-" }}</td>

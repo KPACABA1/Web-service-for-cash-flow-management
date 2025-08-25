@@ -37,7 +37,7 @@ class Status(models.Model):
 
 class CashFlow(models.Model):
     """Модель движения денежных средств."""
-    date_was_created = models.DateTimeField(default=timezone.now, verbose_name='Дата создания')
+    date_was_created = models.DateField(default=timezone.now, verbose_name='Дата создания')
     status = models.ForeignKey(Status, on_delete=models.SET_NULL, null=True, related_name='cashflow_status',
                              verbose_name='Статус')
     type = models.ForeignKey(Type, on_delete=models.SET_NULL, null=True, related_name='cashflow_type',
